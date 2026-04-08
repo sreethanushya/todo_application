@@ -24,13 +24,15 @@ stages {
         }
     }
 
-
-
 stage('Deploy to EC2') {
     steps {
-        // This binds your 'ec2-key' credential to a temporary file path stored in the variable 'PEM'
         withCredentials([sshUserPrivateKey(credentialsId: 'ec2-key', keyFileVariable: 'PEM')]) {
             bat """
+            @echo off
+            :: 1. Disable inheritance and remove 'Users' access from the temporary key file
+            icacls.exe "%PEM%" /inheritance:r /grant:r SYSTEM:R /grant:r "%USERNAME%":R
+            
+            :: 2. Run the SSH command
             "C:\\Windows\\System32\\OpenSSH\\ssh.exe" -i "%PEM%" -o StrictHostKeyChecking=no ubuntu@%EC2_IP% "cd todo_application/backend && git pull origin main && npm install && pm2 restart all"
             """
         }
