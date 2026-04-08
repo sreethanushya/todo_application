@@ -65,6 +65,12 @@ app.delete('/tasks/:id', async (req, res) => {
    🚀 START SERVER
 ========================= */
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
+const PORT = 3000;
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log("Server running on port 3000");
+  });
+}
+
+module.exports = app;
