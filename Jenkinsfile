@@ -27,13 +27,7 @@ stages {
 stage('Prepare Permissions') {
     steps {
         bat """
-        C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "& { \
-            \$path = 'C:\\Users\\idash\\Downloads\\todo.pem'; \
-            # Grant SYSTEM and then remove everyone else in one go \
-            icacls.exe \$path /reset; \
-            icacls.exe \$path /grant:r 'SYSTEM:(R)'; \
-            icacls.exe \$path /inheritance:r; \
-        }"
+        C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "& { \$path='C:\\Users\\idash\\Downloads\\todo.pem'; icacls.exe \$path /reset; icacls.exe \$path /grant:r 'SYSTEM:R'; icacls.exe \$path /inheritance:r }"
         """
     }
 }
