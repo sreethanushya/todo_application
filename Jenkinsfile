@@ -24,19 +24,16 @@ stages {
         }
     }
 
-stage('Prepare Permissions') {
-    steps {
-        bat """
-        C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "& { \$path='C:\\Users\\idash\\Downloads\\todo.pem'; icacls.exe \$path /reset; icacls.exe \$path /grant:r 'SYSTEM:R'; icacls.exe \$path /inheritance:r }"
-        """
-    }
-}
+
 
 stage('Deploy to EC2') {
     steps {
-        bat """
-        "C:\\Windows\\System32\\OpenSSH\\ssh.exe" -i "C:\\Users\\idash\\Downloads\\todo.pem" -o StrictHostKeyChecking=no ubuntu@%EC2_IP% "cd todo_application/backend && git pull origin main && npm install && pm2 restart all"
-        """
+        // This binds your 'ec2-key' credential to a temporary file path stored in the variable 'PEM'
+        withCredentials([sshUserPrivateKey(credentialsId: 'ec2-key', keyFileVariable: 'PEM')]) {
+            bat """
+            "C:\\Windows\\System32\\OpenSSH\\ssh.exe" -i "%PEM%" -o StrictHostKeyChecking=no ubuntu@%EC2_IP% "cd todo_application/backend && git pull origin main && npm install && pm2 restart all"
+            """
+        }
     }
 }
     }
