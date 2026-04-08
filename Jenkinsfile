@@ -24,18 +24,16 @@ stages {
         }
     }
 
-   stage('Prepare Permissions') {
+stage('Prepare Permissions') {
     steps {
-        powershell """
-            \$path = "C:\\Users\\idash\\Downloads\\todo.pem"
-            
-            # Reset and disable inheritance
-            icacls.exe \$path /reset
-            icacls.exe \$path /inheritance:r
-            
-            # Grant Read access to the current user running Jenkins
-            # Using :R for Read access
-            icacls.exe \$path /grant:r "\${env:Sharon}:R"
+        bat """
+        C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -Command "& { \
+            \$path = 'C:\\Users\\idash\\Downloads\\todo.pem'; \
+            icacls.exe \$path /reset; \
+            icacls.exe \$path /inheritance:r; \
+            icacls.exe \$path /grant:r 'SYSTEM:R'; \
+            icacls.exe \$path /grant:r \"\$(\$env:USERNAME):R\"; \
+        }"
         """
     }
 }
