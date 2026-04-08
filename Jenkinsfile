@@ -25,16 +25,13 @@ stages {
     }
 
     stage('Deploy to EC2') {
-        steps {
-            sshagent(['ec2-key']) {
-                bat """
-                ssh -o StrictHostKeyChecking=no ubuntu@%EC2_IP% ^
-                "cd todo_application/backend && git pull origin main && npm install && pm2 restart all"
-                """
-            }
+        steps { 
+          bat """ ssh -i C:\\Users\\idash\\Downloads\\todo.pem -o StrictHostKeyChecking=no ubuntu@%EC2_IP% ^ 
+          "cd todo_application/backend && git pull origin main && npm install && pm2 restart all" """ 
+        }
         }
     }
 }
 
 
-}
+
