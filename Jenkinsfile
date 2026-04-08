@@ -7,6 +7,7 @@ agent any
 
 environment {
     EC2_IP = "51.21.128.240"
+    MONGO_URI = credentials('mongo-uri')
 }
 
 stages {
