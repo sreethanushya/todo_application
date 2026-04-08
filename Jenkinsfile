@@ -1,0 +1,39 @@
+pipeline {
+agent any
+  tools{
+    nodejs 'node'
+    
+
+
+environment {
+    EC2_IP = "51.21.128.240"
+}
+
+stages {
+
+    stage('Install Dependencies') {
+        steps {
+            bat 'cd backend && npm install'
+        }
+    }
+
+    stage('Run Tests') {
+        steps {
+            bat 'cd backend && npm test'
+        }
+    }
+
+    stage('Deploy to EC2') {
+        steps {
+            sshagent(['ec2-key']) {
+                bat """
+                ssh -o StrictHostKeyChecking=no ubuntu@%EC2_IP% ^
+                "cd todo_application/backend && git pull origin main && npm install && pm2 restart all"
+                """
+            }
+        }
+    }
+}
+
+
+}
