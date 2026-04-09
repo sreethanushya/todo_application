@@ -1,4 +1,4 @@
-const API = "http://localhost:3000/tasks";
+const API = "http://51.21.128.240:3000/tasks";
 
 let editId = null;
 
