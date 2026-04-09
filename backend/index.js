@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -15,11 +16,9 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-
 /* =========================
    📦 TASK SCHEMA
 ========================= */
-
 const taskSchema = new mongoose.Schema({
   title: String,
   priority: String,
@@ -62,18 +61,30 @@ app.delete('/tasks/:id', async (req, res) => {
 });
 
 /* =========================
-   🚀 START SERVER
+   🌐 SERVE FRONTEND
 ========================= */
 
-const PORT = 3000;
-// Add this above app.listen
+// Serve frontend build folder
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route (for demo or if frontend is missing)
 app.get('/', (req, res) => {
-  res.send('🟢 Todo App Backend is live!');
+  const indexFile = path.join(__dirname, 'public', 'index.html');
+  res.sendFile(indexFile, err => {
+    if (err) {
+      res.send('🟢 Todo App Backend is live! Frontend not built yet.');
+    }
+  });
 });
+
+/* =========================
+   🚀 START SERVER
+========================= */
+const PORT = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
-    console.log("Server running on port 3000");
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
