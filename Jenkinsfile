@@ -13,34 +13,17 @@ pipeline {
     stages {
 
         // =========================
-        // 1️⃣ Install Frontend Dependencies
-        // =========================
-        stage('Install Frontend Dependencies') {
-            steps {
-                bat 'cd frontend && npm install'
-            }
-        }
-
-        // =========================
-        // 2️⃣ Build Frontend
-        // =========================
-        stage('Build Frontend') {
-            steps {
-                bat 'cd frontend && npm run build'
-            }
-        }
-
-        // =========================
-        // 3️⃣ Copy frontend build to backend
+        // 1️⃣ Copy Frontend to Backend
         // =========================
         stage('Copy Frontend to Backend') {
             steps {
-                bat 'xcopy /E /I /Y frontend\\build backend\\public'
+                // Copy all frontend files (html, js, css) to backend/public
+                bat 'xcopy /E /I /Y frontend\\* backend\\public\\'
             }
         }
 
         // =========================
-        // 4️⃣ Install Backend Dependencies
+        // 2️⃣ Install Backend Dependencies
         // =========================
         stage('Install Backend Dependencies') {
             steps {
@@ -49,7 +32,7 @@ pipeline {
         }
 
         // =========================
-        // 5️⃣ Run Backend Tests
+        // 3️⃣ Run Backend Tests
         // =========================
         stage('Run Tests') {
             steps {
@@ -58,7 +41,7 @@ pipeline {
         }
 
         // =========================
-        // 6️⃣ Deploy to EC2
+        // 4️⃣ Deploy to EC2
         // =========================
         stage('Deploy to EC2') {
             steps {
