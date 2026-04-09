@@ -66,6 +66,10 @@ app.delete('/tasks/:id', async (req, res) => {
 ========================= */
 
 const PORT = 3000;
+// Add this above app.listen
+app.get('/', (req, res) => {
+  res.send('🟢 Todo App Backend is live!');
+});
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
