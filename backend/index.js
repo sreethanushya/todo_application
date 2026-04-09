@@ -34,47 +34,35 @@ const Task = mongoose.model("Task", taskSchema);
 /* =========================
    📌 API ROUTES
 ========================= */
-
-// GET all tasks
 app.get('/tasks', async (req, res) => {
   const tasks = await Task.find();
   res.json(tasks);
 });
 
-// ADD task
 app.post('/tasks', async (req, res) => {
   const newTask = new Task(req.body);
   await newTask.save();
   res.json(newTask);
 });
 
-// UPDATE task
 app.put('/tasks/:id', async (req, res) => {
   await Task.findByIdAndUpdate(req.params.id, req.body);
   res.json({ message: "Updated" });
 });
 
-// DELETE task
 app.delete('/tasks/:id', async (req, res) => {
   await Task.findByIdAndDelete(req.params.id);
   res.json({ message: "Deleted" });
 });
 
 /* =========================
-   🌐 SERVE FRONTEND
+   🌐 SERVE FRONTEND STATIC FILES
 ========================= */
+app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Serve frontend build folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Root route (for demo or if frontend is missing)
+// Root route
 app.get('/', (req, res) => {
-  const indexFile = path.join(__dirname, 'public', 'index.html');
-  res.sendFile(indexFile, err => {
-    if (err) {
-      res.send('🟢 Todo App Backend is live! Frontend not built yet.');
-    }
-  });
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 /* =========================
